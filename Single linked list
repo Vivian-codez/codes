@@ -1,99 +1,265 @@
 #include <iostream>
 #include <string>
 using namespace std;
-// Node structure representing a single action/document state
-struct Node {
-    string action;
-    Node* next;
-    Node(string val) {
-        action = val;
-        next = nullptr;
-    }
-};
-// Singly Linked List class managing the Undo stack
-class HistoryManager {
-private:
-    Node* head;
 
-public:
-    HistoryManager() {
-        head = nullptr;
-    }
-    // Add a new action to history (Insert at Head)
-    void addAction(string actionText) {
-        Node* newNode = new Node(actionText);
-        newNode->next = head;
+// Node structure
+struct Node
+{
+    int rollNo;
+    string name;
+    float marks;
+    Node* next;
+};
+
+// Head pointer
+Node* head = NULL;
+
+// Function to insert a student
+void insertStudent()
+{
+    Node* newNode = new Node();
+
+    cout << "\nEnter Roll Number: ";
+    cin >> newNode->rollNo;
+
+    cout << "Enter Student Name: ";
+    cin >> newNode->name;
+
+    cout << "Enter Marks: ";
+    cin >> newNode->marks;
+
+    newNode->next = NULL;
+
+    // If list is empty
+    if (head == NULL)
+    {
         head = newNode;
-        cout << ">> Action saved: \"" << actionText << "\"\n";
     }
-    // Perform Undo (Delete from Head)
-    void undoAction() {
-        if (head == nullptr) {
-            cout << ">> Nothing to undo. History is empty!\n";
-            return;
-        }
+    else
+    {
         Node* temp = head;
-        head = head->next;
-        cout << ">> Undone action: \"" << temp->action << "\"\n";
-        delete temp;
-    }
-    // View current history from latest to oldest
-    void displayHistory() {
-        if (head == nullptr) {
-            cout << ">> History is empty.\n";
-            return;
-        }
-        cout << "\n--- Current Action History (Most Recent First) ---\n";
-        Node* temp = head;
-        int step = 1;
-        while (temp != nullptr) {
-            cout << step++ << ". " << temp->action << "\n";
+
+        while (temp->next != NULL)
+        {
             temp = temp->next;
         }
-        cout << "-----------------------------------------------\n";
+
+        temp->next = newNode;
     }
-    // Memory cleanup
-    ~HistoryManager() {
-        Node* temp = head;
-        while (temp != nullptr) {
-            Node* nextNode = temp->next;
-            delete temp;
-            temp = nextNode;
+
+    cout << "\nStudent inserted successfully!\n";
+}
+
+// Function to display all students
+void displayStudents()
+{
+    if (head == NULL)
+    {
+        cout << "\nList is empty!\n";
+        return;
+    }
+
+    Node* temp = head;
+
+    cout << "\n--- Student Records ---\n";
+
+    while (temp != NULL)
+    {
+        cout << "Roll No: " << temp->rollNo << endl;
+        cout << "Name   : " << temp->name << endl;
+        cout << "Marks  : " << temp->marks << endl;
+        cout << "-----------------------\n";
+
+        temp = temp->next;
+    }
+}
+
+// Function to search a student
+void searchStudent()
+{
+    int roll;
+    cout << "\nEnter Roll Number to search: ";
+    cin >> roll;
+
+    Node* temp = head;
+
+    while (temp != NULL)
+    {
+        if (temp->rollNo == roll)
+        {
+            cout << "\nStudent Found!\n";
+            cout << "Roll No: " << temp->rollNo << endl;
+            cout << "Name   : " << temp->name << endl;
+            cout << "Marks  : " << temp->marks << endl;
+            return;
+        }
+
+        temp = temp->next;
+    }
+
+    cout << "\nStudent not found!\n";
+}
+
+// Function to update a student
+void updateStudent()
+{
+    int roll;
+
+    cout << "\nEnter Roll Number to update: ";
+    cin >> roll;
+
+    Node* temp = head;
+
+    while (temp != NULL)
+    {
+        if (temp->rollNo == roll)
+        {
+            cout << "Enter New Name: ";
+            cin >> temp->name;
+
+            cout << "Enter New Marks: ";
+            cin >> temp->marks;
+
+            cout << "\nStudent record updated successfully!\n";
+            return;
+        }
+
+        temp = temp->next;
+    }
+
+    cout << "\nStudent not found!\n";
+}
+
+// Function to delete a student
+void deleteStudent()
+{
+    int roll;
+
+    cout << "\nEnter Roll Number to delete: ";
+    cin >> roll;
+
+    Node* temp = head;
+    Node* previous = NULL;
+
+    // If first node is to be deleted
+    if (temp != NULL && temp->rollNo == roll)
+    {
+        head = temp->next;
+        delete temp;
+
+        cout << "\nStudent deleted successfully!\n";
+        return;
+    }
+
+    // Search for the node
+    while (temp != NULL && temp->rollNo != roll)
+    {
+        previous = temp;
+        temp = temp->next;
+    }
+
+    // Student not found
+    if (temp == NULL)
+    {
+        cout << "\nStudent not found!\n";
+        return;
+    }
+
+    // Delete the node
+    previous->next = temp->next;
+    delete temp;
+
+    cout << "\nStudent deleted successfully!\n";
+}
+
+// Function to sort students according to marks
+void sortStudents()
+{
+    if (head == NULL || head->next == NULL)
+    {
+        cout << "\nNot enough records to sort!\n";
+        return;
+    }
+
+    Node* i;
+    Node* j;
+
+    for (i = head; i->next != NULL; i = i->next)
+    {
+        for (j = i->next; j != NULL; j = j->next)
+        {
+            if (i->marks > j->marks)
+            {
+                // Swap data, not nodes
+                swap(i->rollNo, j->rollNo);
+                swap(i->name, j->name);
+                swap(i->marks, j->marks);
+            }
         }
     }
-};
-int main() {
-    HistoryManager editorHistory;
+
+    cout << "\nStudents sorted according to marks!\n";
+}
+
+// Main function
+int main()
+{
     int choice;
-    string inputAction;
-    do {
-        cout << "\n=== TEXT EDITOR UNDO SYSTEM ===\n";
-        cout << "1. Perform New Action (Type text)\n";
-        cout << "2. Undo Last Action\n";
-        cout << "3. View Action History\n";
-        cout << "4. Exit\n";
-        cout << "Enter your choice: ";
+
+    do
+    {
+        cout << "\n================================";
+        cout << "\n Student Record Management";
+        cout << "\n Singly Linked List";
+        cout << "\n================================";
+        cout << "\n1. Insert Student";
+        cout << "\n2. Update Student";
+        cout << "\n3. Search Student";
+        cout << "\n4. Sort Students";
+        cout << "\n5. List All Students";
+        cout << "\n6. Delete Student";
+        cout << "\n7. Exit";
+        cout << "\n================================";
+
+        cout << "\nEnter your choice: ";
         cin >> choice;
-        cin.ignore(); // Clear newline character from input buffer
-        switch (choice) {
+
+        switch (choice)
+        {
             case 1:
-                cout << "Enter action details: ";
-                getline(cin, inputAction);
-                editorHistory.addAction(inputAction);
+                insertStudent();
                 break;
+
             case 2:
-                editorHistory.undoAction();
+                updateStudent();
                 break;
+
             case 3:
-                editorHistory.displayHistory();
+                searchStudent();
                 break;
+
             case 4:
-                cout << "Exiting application...\n";
+                sortStudents();
                 break;
+
+            case 5:
+                displayStudents();
+                break;
+
+            case 6:
+                deleteStudent();
+                break;
+
+            case 7:
+                cout << "\nProgram terminated.\n";
+                break;
+
             default:
-                cout << "Invalid choice! Please try again.\n";
+                cout << "\nInvalid choice! Try again.\n";
         }
-    } while (choice != 4);
+
+    } while (choice != 7);
 
     return 0;
 }
+
