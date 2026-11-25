@@ -1,0 +1,99 @@
+#include <iostream>
+#include <string>
+using namespace std;
+// Node structure representing a single action/document state
+struct Node {
+    string action;
+    Node* next;
+    Node(string val) {
+        action = val;
+        next = nullptr;
+    }
+};
+// Singly Linked List class managing the Undo stack
+class HistoryManager {
+private:
+    Node* head;
+
+public:
+    HistoryManager() {
+        head = nullptr;
+    }
+    // Add a new action to history (Insert at Head)
+    void addAction(string actionText) {
+        Node* newNode = new Node(actionText);
+        newNode->next = head;
+        head = newNode;
+        cout << ">> Action saved: \"" << actionText << "\"\n";
+    }
+    // Perform Undo (Delete from Head)
+    void undoAction() {
+        if (head == nullptr) {
+            cout << ">> Nothing to undo. History is empty!\n";
+            return;
+        }
+        Node* temp = head;
+        head = head->next;
+        cout << ">> Undone action: \"" << temp->action << "\"\n";
+        delete temp;
+    }
+    // View current history from latest to oldest
+    void displayHistory() {
+        if (head == nullptr) {
+            cout << ">> History is empty.\n";
+            return;
+        }
+        cout << "\n--- Current Action History (Most Recent First) ---\n";
+        Node* temp = head;
+        int step = 1;
+        while (temp != nullptr) {
+            cout << step++ << ". " << temp->action << "\n";
+            temp = temp->next;
+        }
+        cout << "-----------------------------------------------\n";
+    }
+    // Memory cleanup
+    ~HistoryManager() {
+        Node* temp = head;
+        while (temp != nullptr) {
+            Node* nextNode = temp->next;
+            delete temp;
+            temp = nextNode;
+        }
+    }
+};
+int main() {
+    HistoryManager editorHistory;
+    int choice;
+    string inputAction;
+    do {
+        cout << "\n=== TEXT EDITOR UNDO SYSTEM ===\n";
+        cout << "1. Perform New Action (Type text)\n";
+        cout << "2. Undo Last Action\n";
+        cout << "3. View Action History\n";
+        cout << "4. Exit\n";
+        cout << "Enter your choice: ";
+        cin >> choice;
+        cin.ignore(); // Clear newline character from input buffer
+        switch (choice) {
+            case 1:
+                cout << "Enter action details: ";
+                getline(cin, inputAction);
+                editorHistory.addAction(inputAction);
+                break;
+            case 2:
+                editorHistory.undoAction();
+                break;
+            case 3:
+                editorHistory.displayHistory();
+                break;
+            case 4:
+                cout << "Exiting application...\n";
+                break;
+            default:
+                cout << "Invalid choice! Please try again.\n";
+        }
+    } while (choice != 4);
+
+    return 0;
+}
