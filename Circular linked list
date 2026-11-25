@@ -1,0 +1,253 @@
+#include <iostream>
+using namespace std;
+
+// Node structure
+struct Node {
+    int data;
+    Node* next;
+};
+
+// Circular Linked List class
+class CircularLinkedList {
+private:
+    Node* last;
+
+public:
+    CircularLinkedList() {
+        last = nullptr;
+    }
+
+    // 1. Insertion
+    void insert() {
+        int value;
+        cout << "Enter value to insert: ";
+        cin >> value;
+
+        Node* newNode = new Node();
+        newNode->data = value;
+
+        // If list is empty
+        if (last == nullptr) {
+            last = newNode;
+            last->next = last;
+        }
+        else {
+            newNode->next = last->next;
+            last->next = newNode;
+            last = newNode;
+        }
+
+        cout << "Element inserted successfully.\n";
+    }
+
+    // 2. Updating
+    void update() {
+        if (last == nullptr) {
+            cout << "List is empty.\n";
+            return;
+        }
+
+        int oldValue, newValue;
+        cout << "Enter value to update: ";
+        cin >> oldValue;
+
+        Node* temp = last->next;
+
+        do {
+            if (temp->data == oldValue) {
+                cout << "Enter new value: ";
+                cin >> newValue;
+
+                temp->data = newValue;
+                cout << "Element updated successfully.\n";
+                return;
+            }
+
+            temp = temp->next;
+        } while (temp != last->next);
+
+        cout << "Element not found.\n";
+    }
+
+    // 3. Searching
+    void search() {
+        if (last == nullptr) {
+            cout << "List is empty.\n";
+            return;
+        }
+
+        int value;
+        cout << "Enter value to search: ";
+        cin >> value;
+
+        Node* temp = last->next;
+        int position = 1;
+
+        do {
+            if (temp->data == value) {
+                cout << "Element found at position "
+                     << position << ".\n";
+                return;
+            }
+
+            temp = temp->next;
+            position++;
+
+        } while (temp != last->next);
+
+        cout << "Element not found.\n";
+    }
+
+    // 4. Sorting
+    void sortList() {
+        if (last == nullptr || last->next == last) {
+            cout << "List is already sorted.\n";
+            return;
+        }
+
+        Node* current = last->next;
+        Node* index;
+
+        do {
+            index = current->next;
+
+            while (index != last->next) {
+                if (current->data > index->data) {
+                    int temp = current->data;
+                    current->data = index->data;
+                    index->data = temp;
+                }
+
+                index = index->next;
+            }
+
+            current = current->next;
+
+        } while (current != last);
+
+        cout << "List sorted successfully.\n";
+    }
+
+    // 5. Listing / Display
+    void display() {
+        if (last == nullptr) {
+            cout << "List is empty.\n";
+            return;
+        }
+
+        Node* temp = last->next;
+
+        cout << "Circular Linked List: ";
+
+        do {
+            cout << temp->data << " -> ";
+            temp = temp->next;
+
+        } while (temp != last->next);
+
+        cout << "(back to first node)\n";
+    }
+
+    // 6. Deletion
+    void deleteNode() {
+        if (last == nullptr) {
+            cout << "List is empty.\n";
+            return;
+        }
+
+        int value;
+        cout << "Enter value to delete: ";
+        cin >> value;
+
+        Node* current = last->next;
+        Node* previous = last;
+
+        do {
+            if (current->data == value) {
+
+                // Only one node
+                if (current == last && current->next == last) {
+                    last = nullptr;
+                }
+                else {
+                    previous->next = current->next;
+
+                    // If deleting last node
+                    if (current == last) {
+                        last = previous;
+                    }
+                }
+
+                delete current;
+
+                cout << "Element deleted successfully.\n";
+                return;
+            }
+
+            previous = current;
+            current = current->next;
+
+        } while (current != last->next);
+
+        cout << "Element not found.\n";
+    }
+};
+
+// Main function
+int main() {
+
+    CircularLinkedList list;
+    int choice;
+
+    do {
+        cout << "\n========== CIRCULAR LINKED LIST ==========\n";
+        cout << "1. Insertion\n";
+        cout << "2. Updation\n";
+        cout << "3. Searching\n";
+        cout << "4. Sorting\n";
+        cout << "5. Listing / Display\n";
+        cout << "6. Deletion\n";
+        cout << "7. Exit\n";
+        cout << "===========================================\n";
+
+        cout << "Enter your choice: ";
+        cin >> choice;
+
+        switch (choice) {
+
+        case 1:
+            list.insert();
+            break;
+
+        case 2:
+            list.update();
+            break;
+
+        case 3:
+            list.search();
+            break;
+
+        case 4:
+            list.sortList();
+            break;
+
+        case 5:
+            list.display();
+            break;
+
+        case 6:
+            list.deleteNode();
+            break;
+
+        case 7:
+            cout << "Program terminated.\n";
+            break;
+
+        default:
+            cout << "Invalid choice! Please try again.\n";
+        }
+
+    } while (choice != 7);
+
+    return 0;
+}
