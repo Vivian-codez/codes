@@ -1,0 +1,89 @@
+Assignment No 3- Searching
+Code:
+#include <iostream>
+#include <string>
+using namespace std;
+
+struct Product
+{
+    int productID;
+    string productName;
+    float price;
+    int quantity;
+};
+
+// Sentinel Search Function
+int sentinelSearch(Product products[], int n, int key)
+{
+    // Store the last element
+    Product last = products[n - 1];
+
+    // Place the search key as a sentinel
+    products[n - 1].productID = key;
+
+    int i = 0;
+
+    while (products[i].productID != key)
+    {
+        i++;
+    }
+
+    // Restore the last element
+    products[n - 1] = last;
+
+    // Check whether the product was actually found
+    if (i < n - 1 || products[n - 1].productID == key)
+        return i;
+
+    return -1;
+}
+
+int main()
+{
+    int n;
+
+    cout << "Enter number of products: ";
+    cin >> n;
+
+    Product products[n];
+
+    // Input product details
+    for (int i = 0; i < n; i++)
+    {
+        cout << "\nEnter details for Product " << i + 1 << endl;
+
+        cout << "Enter Product ID: ";
+        cin >> products[i].productID;
+
+        cout << "Enter Product Name: ";
+        cin >> products[i].productName;
+
+        cout << "Enter Price: ";
+        cin >> products[i].price;
+
+        cout << "Enter Quantity: ";
+        cin >> products[i].quantity;
+    }
+
+    int key;
+    cout << "\nEnter Product ID to search: ";
+    cin >> key;
+
+    // Perform Sentinel Search
+    int result = sentinelSearch(products, n, key);
+
+    if (result != -1)
+    {
+        cout << "\nProduct Found!" << endl;
+        cout << "Product ID: " << products[result].productID << endl;
+        cout << "Product Name: " << products[result].productName << endl;
+        cout << "Price: " << products[result].price << endl;
+        cout << "Quantity: " << products[result].quantity << endl;
+    }
+    else
+    {
+        cout << "\nProductNotAvailable" << endl;
+    }
+
+    return 0;
+}
