@@ -1,0 +1,81 @@
+#include <iostream>
+using namespace std;
+
+struct Node {
+    int roll;
+    Node* left;
+    Node* right;
+
+    Node(int r) {
+        roll = r;
+        left = right = NULL;
+    }
+};
+
+// Insert a node into BST
+Node* insert(Node* root, int roll) {
+    if (root == NULL)
+        return new Node(roll);
+
+    if (roll < root->roll)
+        root->left = insert(root->left, roll);
+    else if (roll > root->roll)
+        root->right = insert(root->right, roll);
+
+    return root;
+}
+
+// Inorder: Left, Root, Right
+void inorder(Node* root) {
+    if (root == NULL)
+        return;
+
+    inorder(root->left);
+    cout << root->roll << " ";
+    inorder(root->right);
+}
+
+// Preorder: Root, Left, Right
+void preorder(Node* root) {
+    if (root == NULL)
+        return;
+
+    cout << root->roll << " ";
+    preorder(root->left);
+    preorder(root->right);
+}
+
+// Postorder: Left, Right, Root
+void postorder(Node* root) {
+    if (root == NULL)
+        return;
+
+    postorder(root->left);
+    postorder(root->right);
+    cout << root->roll << " ";
+}
+
+int main() {
+    Node* root = NULL;
+    int n, roll;
+
+    cout << "Enter number of students: ";
+    cin >> n;
+
+    cout << "Enter student roll numbers: ";
+    for (int i = 0; i < n; i++) {
+        cin >> roll;
+        root = insert(root, roll);
+    }
+
+    cout << "\nInorder Traversal: ";
+    inorder(root);
+
+    cout << "\nPreorder Traversal: ";
+    preorder(root);
+
+    cout << "\nPostorder Traversal: ";
+    postorder(root);
+
+    return 0;
+}
