@@ -1,0 +1,104 @@
+#include <iostream>
+#include <vector>
+using namespace std;
+
+class Graph {
+    int vertices;
+    vector<int> adj[20];
+
+public:
+
+    // Constructor
+    Graph(int v) {
+        vertices = v;
+    }
+
+    // Add road between two locations
+    void addEdge(int u, int v) {
+        adj[u].push_back(v);
+        adj[v].push_back(u);
+    }
+
+    // DFS to explore all possible routes
+    void DFS(int current, int destination,
+             bool visited[], vector<int>& path) {
+
+        // Mark current location as visited
+        visited[current] = true;
+
+        // Add current location to path
+        path.push_back(current);
+
+        // Destination reached
+        if (current == destination) {
+
+            cout << "Route: ";
+
+            for (int i = 0; i < path.size(); i++) {
+                cout << path[i];
+
+                if (i != path.size() - 1)
+                    cout << " -> ";
+            }
+
+            cout << endl;
+        }
+        else {
+
+            // Visit all neighbouring locations
+            for (int neighbour : adj[current]) {
+
+                if (!visited[neighbour]) {
+
+                    DFS(neighbour, destination,
+                        visited, path);
+                }
+            }
+        }
+
+        // Backtracking
+        visited[current] = false;
+        path.pop_back();
+    }
+};
+
+int main() {
+
+    int v, e;
+
+    cout << "Enter number of locations: ";
+    cin >> v;
+
+    Graph g(v);
+
+    cout << "Enter number of roads: ";
+    cin >> e;
+
+    cout << "Enter road connections:\n";
+
+    for (int i = 0; i < e; i++) {
+
+        int u, v;
+        cin >> u >> v;
+
+        g.addEdge(u, v);
+    }
+
+    int source, destination;
+
+    cout << "Enter starting location: ";
+    cin >> source;
+
+    cout << "Enter destination location: ";
+    cin >> destination;
+
+    bool visited[20] = {false};
+
+    vector<int> path;
+
+    cout << "\nAll possible routes:\n";
+
+    g.DFS(source, destination, visited, path);
+
+    return 0;
+}
