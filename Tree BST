@@ -1,0 +1,94 @@
+#include <iostream>
+using namespace std;
+
+struct Node {
+    int roll;
+    Node* left;
+    Node* right;
+
+    Node(int r) {
+        roll = r;
+        left = right = nullptr;
+    }
+};
+
+// Insert a student into BST
+Node* insert(Node* root, int roll) {
+    if (root == nullptr)
+        return new Node(roll);
+
+    if (roll < root->roll)
+        root->left = insert(root->left, roll);
+    else if (roll > root->roll)
+        root->right = insert(root->right, roll);
+
+    return root;
+}
+
+// Find minimum roll number
+Node* findMin(Node* root) {
+    if (root == nullptr)
+        return nullptr;
+
+    while (root->left != nullptr)
+        root = root->left;
+
+    return root;
+}
+
+// Find maximum roll number
+Node* findMax(Node* root) {
+    if (root == nullptr)
+        return nullptr;
+
+    while (root->right != nullptr)
+        root = root->right;
+
+    return root;
+}
+
+// Search for a student
+Node* search(Node* root, int roll) {
+    if (root == nullptr || root->roll == roll)
+        return root;
+
+    if (roll < root->roll)
+        return search(root->left, roll);
+    else
+        return search(root->right, roll);
+}
+
+int main() {
+    Node* root = nullptr;
+    int n, roll, key;
+
+    cout << "Enter number of students: ";
+    cin >> n;
+
+    cout << "Enter roll numbers:\n";
+    for (int i = 0; i < n; i++) {
+        cin >> roll;
+        root = insert(root, roll);
+    }
+
+    Node* minNode = findMin(root);
+    Node* maxNode = findMax(root);
+
+    if (minNode != nullptr) {
+        cout << "Minimum roll number: "
+             << minNode->roll << endl;
+
+        cout << "Maximum roll number: "
+             << maxNode->roll << endl;
+    }
+
+    cout << "Enter roll number to search: ";
+    cin >> key;
+
+    if (search(root, key) != nullptr)
+        cout << "Student found.\n";
+    else
+        cout << "Student not found.\n";
+
+    return 0;
+}
