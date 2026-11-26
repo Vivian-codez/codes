@@ -1,3 +1,4 @@
+//3c
 #include <iostream>
 using namespace std;
 
@@ -69,6 +70,108 @@ int main()
     }
 
     cout << endl;
+
+    return 0;
+}
+
+//3D
+#include <iostream>
+using namespace std;
+
+// Function to merge two sorted parts
+void merge(int experience[], int left, int mid, int right)
+{
+    int n1 = mid - left + 1;
+    int n2 = right - mid;
+
+    int L[n1], R[n2];
+
+    // Copy elements into temporary arrays
+    for (int i = 0; i < n1; i++)
+        L[i] = experience[left + i];
+
+    for (int j = 0; j < n2; j++)
+        R[j] = experience[mid + 1 + j];
+
+    int i = 0, j = 0, k = left;
+
+    // Merge in descending order
+    while (i < n1 && j < n2)
+    {
+        if (L[i] >= R[j])
+        {
+            experience[k] = L[i];
+            i++;
+        }
+        else
+        {
+            experience[k] = R[j];
+            j++;
+        }
+        k++;
+    }
+
+    // Copy remaining elements of L[]
+    while (i < n1)
+    {
+        experience[k] = L[i];
+        i++;
+        k++;
+    }
+
+    // Copy remaining elements of R[]
+    while (j < n2)
+    {
+        experience[k] = R[j];
+        j++;
+        k++;
+    }
+}
+
+// Merge Sort function
+void mergeSort(int experience[], int left, int right)
+{
+    if (left < right)
+    {
+        int mid = left + (right - left) / 2;
+
+        mergeSort(experience, left, mid);
+        mergeSort(experience, mid + 1, right);
+
+        merge(experience, left, mid, right);
+    }
+}
+
+int main()
+{
+    int n;
+
+    cout << "Enter number of job applicants: ";
+    cin >> n;
+
+    int experience[n];
+
+    // Input experience
+    cout << "Enter experience of each applicant (in years):" << endl;
+
+    for (int i = 0; i < n; i++)
+    {
+        cout << "Applicant " << i + 1 << ": ";
+        cin >> experience[i];
+    }
+
+    // Sort using Merge Sort
+    mergeSort(experience, 0, n - 1);
+
+    // Display sorted experience
+    cout << "\nJob applicants sorted by experience (descending order):"
+         << endl;
+
+    for (int i = 0; i < n; i++)
+    {
+        cout << "Applicant " << i + 1
+             << " - " << experience[i] << " years" << endl;
+    }
 
     return 0;
 }
