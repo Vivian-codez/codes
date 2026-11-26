@@ -90,4 +90,19 @@ int main() {
                     for (int i = 0; i < n; i++) {
                         cout << arr[i] << " ";
                     }
-                    cout
+                                        cout << endl;
+                }
+                break;
+            }
+
+            case 5:
+                cout << "Program Exited." << endl;
+                break;
+
+            default:
+                cout << "Invalid Choice!" << endl;
+        }
+    } while (choice != 5);
+
+    return 0;
+}
